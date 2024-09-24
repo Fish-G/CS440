@@ -16,7 +16,8 @@ class Maze {
         return sb.toString()
     }
     fun generateMaze() {
-        generateMaze(Random.nextInt(0,101).also(::print),Random.nextInt(0,101).also(::print))
+        //generateMaze(Random.nextInt(0,101).also(::print),Random.nextInt(0,101).also(::print))
+        generateMaze(0,0)
     }
 
     private fun generateMaze(x: Int, y: Int) {
@@ -24,8 +25,10 @@ class Maze {
         var pM = calcPossibleNeighbors(x,y)
         while (pM.isNotEmpty()) {
             val tileSelection = pM.random()
-            if (Random.nextDouble() <= 0.3) tileSelection.blocked = true
-            else generateMaze(tileSelection.x,tileSelection.y)
+            if (Random.nextDouble() <= 0.3) {
+                tileSelection.blocked = true
+                tileSelection.visited = true
+            } else generateMaze(tileSelection.x,tileSelection.y)
             pM = calcPossibleNeighbors(x,y)
         }
     }
