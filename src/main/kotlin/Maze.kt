@@ -40,17 +40,18 @@ data class Tile(
 class Maze {
     val maze: Array<Array<Tile>> = Array(101) { i -> Array(101) { j -> Tile(j, i) } }
     var goal: Tile = Tile(-1, -1)
-    val start: Pair<Int, Int> = Pair(Random.nextInt(0, 101), Random.nextInt(0, 101))
+    private val s: Pair<Int, Int> = Pair(Random.nextInt(0, 101), Random.nextInt(0, 101))
+    var start:Tile = Tile(-1,-1)
     val goalPotentials = HashSet<Tile>()
     override fun toString(): String {
         val sb = StringBuilder()
         for (r in maze) {
             for (i in r) {
-                if (i.blocked) {
+                if (i.blocked || !i.visited) {
                     sb.append("#")
                 } else if (i.isGoal) {
                     sb.append("!")
-                } else if (i.x == start.first && i.y == start.second) {
+                } else if (i.x == s.first && i.y == s.second) {
                     sb.append("O")
                 } else {
                     sb.append("_")
@@ -66,13 +67,14 @@ class Maze {
     }
 
     fun generateMaze() {
-        generateMaze(start.first, start.second)
-        if (goalPotentials.isEmpty()) goal = maze[start.second][start.first]
+        generateMaze(s.first, s.second)
+        if (goalPotentials.isEmpty()) goal = maze[s.second][s.first]
         else {
             val g = goalPotentials.random()
             g.isGoal = true
             goal = g
         }
+        start = maze[s.second][s.first]
     }
 
     private fun generateMaze(x: Int, y: Int) {

@@ -1,13 +1,13 @@
 import java.util.PriorityQueue
 import kotlin.math.abs
 
-class AStar(val maze: Maze, comparator: (a:Tile,b:Tile)->Int) {
+class AStar(val maze: Maze, comparator: (a: Tile, b: Tile) -> Int, val start: Tile, val goal: Tile) {
     val closed: HashSet<Tile> = HashSet()
     private val open: PriorityQueue<Tile> = PriorityQueue(comparator)
     private val hso: HashSet<Tile> =
         HashSet() // hashset that mirrors open pq, used for o(1) checks for if tile is in open
     var tilesExpanded = 0
-    private var cur: Tile = maze.maze[maze.start.second][maze.start.first]
+    private var cur: Tile = maze.start
 
     private fun h(t: Tile): Int {
         return abs(maze.goal.x - t.x) + abs(maze.goal.y - t.y)
@@ -20,7 +20,7 @@ class AStar(val maze: Maze, comparator: (a:Tile,b:Tile)->Int) {
     }
 
     private fun aStar() {
-        while (cur != maze.goal && open.isNotEmpty()) {
+        while (cur != goal && open.isNotEmpty()) {
             closed.add(cur)
 
             adjacent(cur).forEach { i ->
@@ -58,7 +58,7 @@ class AStar(val maze: Maze, comparator: (a:Tile,b:Tile)->Int) {
         for (row in maze.maze) {
             for (i in row) {
                 if (i.blocked) sb.append("#")
-                else if (i == maze[maze.start.second, maze.start.first]) sb.append("O")
+                else if (i == start) sb.append("O")
                 else if (closed.contains(i)) sb.append("X")
                 else if (i == maze.goal) sb.append("!")
                 else sb.append("_")
@@ -69,17 +69,41 @@ class AStar(val maze: Maze, comparator: (a:Tile,b:Tile)->Int) {
     }
 }
 
-fun main() {
-    var delta = 0
-    for (i in 0..<10000){
-        val m = Maze()
+class Testers {
+    companion object {
+        fun runAStar() {
+            val maze = Maze()
+            maze.generateMaze()
+            println("goal: !, start: O, wall: #, empty: _")
+            println(maze)
+            val aStar = AStar(maze,Tile::compareSmallG,maze.start,maze.goal)
+            aStar.run()
+            println(aStar)
 
-        m.generateMaze()
-        val a = AStar(m, Tile::compareLargeG)
-        a.run()
-        val b = AStar(m, Tile::compareSmallG)
-        b.run()
-        delta += a.tilesExpanded - b.tilesExpanded
+        }
+
+        fun differenceInGCompare() {
+            var delta = 0
+            for (i in 0..<10000) {
+                val m = Maze()
+
+                m.generateMaze()
+                val a = AStar(m, Tile::compareLargeG, m.start, m.goal)
+                a.run()
+                val b = AStar(m, Tile::compareSmallG, m.start, m.goal)
+                b.run()
+                delta += a.tilesExpanded - b.tilesExpanded
+            }
+            println(delta / 1000)
+        }
+
+        fun forwardVReverse() {
+
+        }
+
     }
-    println(delta/1000)
+}
+
+fun main() {
+    Testers.runAStar()
 }
