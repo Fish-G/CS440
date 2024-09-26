@@ -6,7 +6,7 @@ data class Tile(
     var visited: Boolean = false,
     var blocked: Boolean = false,
     var isGoal: Boolean = false,
-    var f: Pair<Int,Int>? = null // (g,c)
+    var f: Pair<Int, Int>? = null // (g,c)
 ) {
     override fun equals(other: Any?): Boolean {
         if (other !is Tile) return false
@@ -17,13 +17,18 @@ data class Tile(
         return "(${x},${y})"
     }
 
+    override fun hashCode(): Int {
+        val t = y + ((x+1)/2)
+        return x+t*t
+    }
+
     companion object {
-        fun compareLargeG(a:Tile, b:Tile) :Int {
-            if (a.f!!.first + a.f!!.second == b.f!!.first + b.f!!.second) return  a.f!!.first.compareTo(b.f!!.first)
+        fun compareLargeG(a: Tile, b: Tile): Int {
+            if (a.f!!.first + a.f!!.second == b.f!!.first + b.f!!.second) return a.f!!.first.compareTo(b.f!!.first)
             return (a.f!!.first + a.f!!.second).compareTo(b.f!!.first + b.f!!.second)
         }
 
-        fun compareSmallG(a:Tile, b:Tile) : Int {
+        fun compareSmallG(a: Tile, b: Tile): Int {
             if (a.f!!.first + a.f!!.second == b.f!!.first + b.f!!.second) return -a.f!!.first.compareTo(b.f!!.first)
             return (a.f!!.first + a.f!!.second).compareTo(b.f!!.first + b.f!!.second)
         }
@@ -34,9 +39,9 @@ data class Tile(
 
 class Maze {
     val maze: Array<Array<Tile>> = Array(101) { i -> Array(101) { j -> Tile(j, i) } }
-    var goal: Tile = Tile(-1,-1)
+    var goal: Tile = Tile(-1, -1)
     val start: Pair<Int, Int> = Pair(Random.nextInt(0, 101), Random.nextInt(0, 101))
-
+    val goalPotentials = HashSet<Tile>()
     override fun toString(): String {
         val sb = StringBuilder()
         for (r in maze) {
@@ -56,21 +61,18 @@ class Maze {
         return sb.toString()
     }
 
-    operator fun get(i:Int, j:Int) : Tile {
+    operator fun get(i: Int, j: Int): Tile {
         return maze[i][j]
     }
 
     fun generateMaze() {
         generateMaze(start.first, start.second)
-
-        var x = Random.nextInt(0, 101)
-        var y = Random.nextInt(0, 101)
-        while (!maze[y][x].visited || maze[y][x].blocked || Pair(x,y) == start) {
-            x = Random.nextInt(0, 101)
-            y = Random.nextInt(0, 101)
+        if (goalPotentials.isEmpty()) goal = maze[start.second][start.first]
+        else {
+            val g = goalPotentials.random()
+            g.isGoal = true
+            goal = g
         }
-        maze[y][x].isGoal = true
-        goal = maze[y][x]
     }
 
     private fun generateMaze(x: Int, y: Int) {
@@ -81,7 +83,10 @@ class Maze {
             if (Random.nextDouble() <= 0.3) {
                 tileSelection.blocked = true
                 tileSelection.visited = true
-            } else generateMaze(tileSelection.x, tileSelection.y)
+            } else {
+                goalPotentials.add(maze[y][x])
+                generateMaze(tileSelection.x, tileSelection.y)
+            }
             pM = calcPossibleNeighbors(x, y)
         }
     }
