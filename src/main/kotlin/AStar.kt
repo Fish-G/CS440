@@ -1,6 +1,5 @@
 import java.util.PriorityQueue
 import kotlin.math.abs
-import kotlin.system.measureTimeMillis
 
 class AStar(val maze: Maze, comparator: (a:Tile,b:Tile)->Int) {
     val closed: HashSet<Tile> = HashSet()
@@ -71,19 +70,16 @@ class AStar(val maze: Maze, comparator: (a:Tile,b:Tile)->Int) {
 }
 
 fun main() {
+    var delta = 0
+    for (i in 0..<10000){
+        val m = Maze()
 
-    val m = Maze()
-
-    m.generateMaze()
-    val a = AStar(m,Tile::compareLargeG)
-    a.run()
-    println("a took ${a.tilesExpanded}")
-    val b = AStar(m,Tile::compareSmallG)
-    b.run()
-    println("b took ${b.tilesExpanded}")
-
-
-
-
-
+        m.generateMaze()
+        val a = AStar(m, Tile::compareLargeG)
+        a.run()
+        val b = AStar(m, Tile::compareSmallG)
+        b.run()
+        delta += a.tilesExpanded - b.tilesExpanded
+    }
+    println(delta/1000)
 }
