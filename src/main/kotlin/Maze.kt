@@ -42,7 +42,7 @@ class Maze {
     var goal: Tile = Tile(-1, -1)
     private val s: Pair<Int, Int> = Pair(Random.nextInt(0, 101), Random.nextInt(0, 101))
     var start:Tile = Tile(-1,-1)
-    val goalPotentials = HashSet<Tile>()
+    val traveledNodes = HashSet<Tile>()
     override fun toString(): String {
         val sb = StringBuilder()
         for (r in maze) {
@@ -51,7 +51,7 @@ class Maze {
                     sb.append("#")
                 } else if (i.isGoal) {
                     sb.append("!")
-                } else if (i.x == s.first && i.y == s.second) {
+                } else if (i == start) {
                     sb.append("O")
                 } else {
                     sb.append("_")
@@ -68,13 +68,16 @@ class Maze {
 
     fun generateMaze() {
         generateMaze(s.first, s.second)
-        if (goalPotentials.isEmpty()) goal = maze[s.second][s.first]
-        else {
-            val g = goalPotentials.random()
+        if (traveledNodes.isEmpty()) {
+            goal = maze[s.second][s.first]
+            start = maze[s.second][s.first]
+        } else {
+            val g = traveledNodes.random()
             g.isGoal = true
             goal = g
+            start = traveledNodes.random()
         }
-        start = maze[s.second][s.first]
+
     }
 
     private fun generateMaze(x: Int, y: Int) {
@@ -86,7 +89,7 @@ class Maze {
                 tileSelection.blocked = true
                 tileSelection.visited = true
             } else {
-                goalPotentials.add(maze[y][x])
+                traveledNodes.add(maze[y][x])
                 generateMaze(tileSelection.x, tileSelection.y)
             }
             pM = calcPossibleNeighbors(x, y)

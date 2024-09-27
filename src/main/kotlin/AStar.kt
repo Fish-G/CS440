@@ -7,10 +7,10 @@ class AStar(val maze: Maze, comparator: (a: Tile, b: Tile) -> Int, val start: Ti
     private val hso: HashSet<Tile> =
         HashSet() // hashset that mirrors open pq, used for o(1) checks for if tile is in open
     var tilesExpanded = 0
-    private var cur: Tile = maze.start
+    private var cur: Tile = start
 
     private fun h(t: Tile): Int {
-        return abs(maze.goal.x - t.x) + abs(maze.goal.y - t.y)
+        return abs(goal.x - t.x) + abs(goal.y - t.y)
     }
 
     fun run() {
@@ -98,12 +98,23 @@ class Testers {
         }
 
         fun forwardVReverse() {
-
+            var delta = 0
+            for (i in 0..<10000) {
+                val m = Maze()
+                m.generateMaze()
+                val forward = AStar(m, Tile::compareSmallG, m.start,m.goal)
+                val backward = AStar(m, Tile::compareSmallG, m.goal,m.start)
+                forward.run()
+                backward.run()
+//                println("${forward.tilesExpanded}, ${backward.tilesExpanded}")
+                delta += forward.tilesExpanded-backward.tilesExpanded
+            }
+            println(delta / 10000)
         }
 
     }
 }
 
 fun main() {
-    Testers.runAStar()
+    Testers.forwardVReverse()
 }
