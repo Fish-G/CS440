@@ -24,12 +24,12 @@ data class Tile(
 
     companion object {
         fun compareLargeG(a: Tile, b: Tile): Int {
-            if (a.f!!.first + a.f!!.second == b.f!!.first + b.f!!.second) return a.f!!.first.compareTo(b.f!!.first)
+            if (a.f!!.first + a.f!!.second == b.f!!.first + b.f!!.second) return b.f!!.second.compareTo(a.f!!.second)
             return (a.f!!.first + a.f!!.second).compareTo(b.f!!.first + b.f!!.second)
         }
 
         fun compareSmallG(a: Tile, b: Tile): Int {
-            if (a.f!!.first + a.f!!.second == b.f!!.first + b.f!!.second) return -a.f!!.first.compareTo(b.f!!.first)
+            if (a.f!!.first + a.f!!.second == b.f!!.first + b.f!!.second) return a.f!!.second.compareTo(b.f!!.second)
             return (a.f!!.first + a.f!!.second).compareTo(b.f!!.first + b.f!!.second)
         }
     }
