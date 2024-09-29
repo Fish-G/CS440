@@ -18,8 +18,8 @@ data class Tile(
     }
 
     override fun hashCode(): Int {
-        val t = y + ((x+1)/2)
-        return x+t*t
+        val t = y + ((x + 1) / 2)
+        return x + t * t
     }
 
     companion object {
@@ -41,7 +41,7 @@ class Maze {
     val maze: Array<Array<Tile>> = Array(101) { i -> Array(101) { j -> Tile(j, i) } }
     var goal: Tile = Tile(-1, -1)
     private val s: Pair<Int, Int> = Pair(Random.nextInt(0, 101), Random.nextInt(0, 101))
-    var start:Tile = Tile(-1,-1)
+    var start: Tile = Tile(-1, -1)
     val traveledNodes = HashSet<Tile>()
     override fun toString(): String {
         val sb = StringBuilder()

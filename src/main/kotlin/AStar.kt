@@ -1,12 +1,7 @@
 import java.util.PriorityQueue
 import kotlin.math.abs
 
-
-
-
-
-
-open class AStar(val maze: Maze, comparator: (a: Tile, b: Tile) -> Int, val start: Tile, val goal: Tile) {
+class AStar(val maze: Maze, comparator: (a: Tile, b: Tile) -> Int, val start: Tile, val goal: Tile) {
     val closed: HashSet<Tile> = HashSet()
     private val open: PriorityQueue<Tile> = PriorityQueue(comparator)
     private val hso: HashSet<Tile> =
@@ -122,13 +117,13 @@ class Testers {
                 val maze = Maze()
                 maze.generateMaze()
 
-                val a = AStar(maze,Tile::compareSmallG,maze.start,maze.goal)
+                val a = AStar(maze, Tile::compareSmallG, maze.start, maze.goal)
                 a.run()
                 val n = a.tilesExpanded
                 a.adaptive()
                 delta += n - a.tilesExpanded
             }
-            println(delta/10000)
+            println(delta / 10000)
 
         }
 
@@ -138,7 +133,7 @@ class Testers {
             maze.generateMaze()
             println("goal: !, start: O, wall: #, empty: _")
             println(maze)
-            val aStar = AStar(maze,Tile::compareSmallG,maze.start,maze.goal)
+            val aStar = AStar(maze, Tile::compareSmallG, maze.start, maze.goal)
             aStar.run()
             println(aStar)
 
@@ -164,11 +159,11 @@ class Testers {
             for (i in 0..<10000) {
                 val m = Maze()
                 m.generateMaze()
-                val forward = AStar(m, Tile::compareSmallG, m.start,m.goal)
-                val backward = AStar(m, Tile::compareSmallG, m.goal,m.start)
+                val forward = AStar(m, Tile::compareSmallG, m.start, m.goal)
+                val backward = AStar(m, Tile::compareSmallG, m.goal, m.start)
                 forward.run()
                 backward.run()
-                delta += forward.tilesExpanded-backward.tilesExpanded
+                delta += forward.tilesExpanded - backward.tilesExpanded
             }
             println(delta / 10000)
         }
