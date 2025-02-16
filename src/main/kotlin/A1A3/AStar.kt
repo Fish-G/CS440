@@ -1,3 +1,5 @@
+package A1A3
+
 import java.util.PriorityQueue
 import kotlin.math.abs
 
@@ -117,7 +119,7 @@ class Testers {
                 val maze = Maze()
                 maze.generateMaze()
 
-                val a = AStar(maze, Tile::compareSmallG, maze.start, maze.goal)
+                val a = AStar(maze, Tile.Companion::compareSmallG, maze.start, maze.goal)
                 a.run()
                 val n = a.tilesExpanded
                 a.adaptive()
@@ -133,7 +135,7 @@ class Testers {
             maze.generateMaze()
             println("goal: !, start: O, wall: #, empty: _")
             println(maze)
-            val aStar = AStar(maze, Tile::compareSmallG, maze.start, maze.goal)
+            val aStar = AStar(maze, Tile.Companion::compareSmallG, maze.start, maze.goal)
             aStar.run()
             println(aStar)
 
@@ -145,9 +147,9 @@ class Testers {
                 val m = Maze()
 
                 m.generateMaze()
-                val a = AStar(m, Tile::compareLargeG, m.start, m.goal)
+                val a = AStar(m, Tile.Companion::compareLargeG, m.start, m.goal)
                 a.run()
-                val b = AStar(m, Tile::compareSmallG, m.start, m.goal)
+                val b = AStar(m, Tile.Companion::compareSmallG, m.start, m.goal)
                 b.run()
                 delta += a.tilesExpanded - b.tilesExpanded
             }
@@ -159,8 +161,8 @@ class Testers {
             for (i in 0..<10000) {
                 val m = Maze()
                 m.generateMaze()
-                val forward = AStar(m, Tile::compareSmallG, m.start, m.goal)
-                val backward = AStar(m, Tile::compareSmallG, m.goal, m.start)
+                val forward = AStar(m, Tile.Companion::compareSmallG, m.start, m.goal)
+                val backward = AStar(m, Tile.Companion::compareSmallG, m.goal, m.start)
                 forward.run()
                 backward.run()
                 delta += forward.tilesExpanded - backward.tilesExpanded
